@@ -1,0 +1,66 @@
+buildscript {
+  ext.MdbDevice = [
+    kotlinVersion: "2.2.10",
+    minSdkVersion: 30,
+    compileSdkVersion: 37
+  ]
+
+  ext.getExtOrDefault = { prop ->
+    if (rootProject.ext.has(prop)) {
+      return rootProject.ext.get(prop)
+    }
+
+    return MdbDevice[prop]
+  }
+
+  repositories {
+    google()
+    mavenCentral()
+  }
+
+  dependencies {
+    classpath "com.android.tools.build:gradle:9.2.1"
+    // noinspection DifferentKotlinGradleVersion
+    classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:${getExtOrDefault('kotlinVersion')}"
+  }
+}
+
+
+apply plugin: "com.android.library"
+
+if (project.extensions.findByName("kotlin") == null) {
+  apply plugin: "kotlin-android"
+}
+
+
+apply plugin: "com.facebook.react"
+
+android {
+  namespace "com.rabbah.mdbdevice"
+
+  compileSdkVersion getExtOrDefault("compileSdkVersion")
+
+  defaultConfig {
+    minSdkVersion getExtOrDefault("minSdkVersion")
+  }
+
+  compileOptions {
+    sourceCompatibility JavaVersion.VERSION_17
+    targetCompatibility JavaVersion.VERSION_17
+  }
+}
+
+dependencies {
+  implementation "com.facebook.react:react-android"
+
+  // device-lib, included in the app's build by rn-app/android/settings.gradle
+  api project(":transport-mdb")          // MdbSlaveTransport + MdbSlavePort (+ core through its api)
+  api project(":testing")                // FakeTransport, for the emulator
+
+  testImplementation "org.jetbrains.kotlin:kotlin-test:2.2.10"
+  testImplementation "org.jetbrains.kotlinx:kotlinx-coroutines-test:1.10.2"
+  testImplementation "org.junit.jupiter:junit-jupiter:5.11.4"
+  testRuntimeOnly "org.junit.platform:junit-platform-launcher:1.11.4"
+}
+
+tasks.withType(Test).configureEach { useJUnitPlatform() }

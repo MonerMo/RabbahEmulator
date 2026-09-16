@@ -1,0 +1,13 @@
+pluginManagement { includeBuild("../node_modules/@react-native/gradle-plugin") }
+plugins { id("com.facebook.react.settings") }
+extensions.configure(com.facebook.react.ReactSettingsExtension){ ex -> ex.autolinkLibrariesFromCommand() }
+rootProject.name = 'RnApp'
+include ':app'
+includeBuild('../node_modules/@react-native/gradle-plugin')
+
+// device-lib's modules are built as part of this app. Their folders live outside android/,
+// so each one is included by name and pointed at its real directory.
+['core', 'testing', 'cm30-aar', 'transport-mdb'].each { name ->
+    include ":$name"
+    project(":$name").projectDir = file("../../device-lib/$name")
+}
