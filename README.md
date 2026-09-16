@@ -107,21 +107,3 @@ Three facts about the CM30 library were assumed and can only be checked on the d
 Values to confirm with the machine's owner (all in `rn-app/src/device/session/types.ts`, `DEFAULT_CONFIG`):
 reader identity (manufacturer code `RAB`, serial, model, version), currency (`1682H` = SAR), scale factor and
 decimal places, whether multivend is wanted.
-
-## Tests
-
-| Where                                            | What                                                                   | Count |
-|--------------------------------------------------|------------------------------------------------------------------------|-------|
-| device-lib/core                                  | hex, unsigned reads, checksum                                          | 3     |
-| device-lib/testing                               | the puppet: connect, mailbox, NAK policy, RESET, drop, timeout, disconnect | 8 |
-| device-lib/transport-mdb                         | the real transport over a scripted port: open failure, missing .so, POLL, bad CHK, RESET, timeout | 11 |
-| device-lib/rn-bridge                             | the bridge over the puppet: events, error codes, reconnect, close      | 7     |
-| rn-app/src/device/codec                          | bytes, every message round trip, the guide's flows, the byte-literal guard | 75 |
-| rn-app/src/device/session (+ testing)            | handshake, Level 1, Level 2, Level 3, failures, the TypeScript puppet   | 31    |
-| rn-app/src/features/debug                        | the screen, driven by the puppet                                       | 7     |
-
-## Out of scope
-
-iOS (the CM30 is Android), the non-cashless MDB peripherals (address 60H), file transfer, coupons, remote vend,
-expanded-currency mode. Where the real VMC uses one of those, the log shows `?? unknown message` and Kotlin has
-already ACKed the block.
